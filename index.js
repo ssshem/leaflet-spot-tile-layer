@@ -58,7 +58,7 @@ var olMap = new ol.Map({
 var spotLayer = new SpotGridLayer({
   zIndex: 10,
   debuged: false,
-  opacity: 0.9
+  // opacity: 0
 }).updateUrl('./data/tiles/pressure/{z}/{x}_{y}', {
   dataZooms: [2, 5],
   colorSegments: [
@@ -88,11 +88,45 @@ var spotLayer = new SpotGridLayer({
   ]
 });
 
+// var a = spotLayer.setOpacity(0.5);
+// var aa = spotLayer.options.opacity;
+
 var Lmap = OlCommon.getSingleLMap('leaflet-map-container', olMap);
 
 spotLayer.addTo(Lmap);
 
-var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(Lmap);
+var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  pane: 'mapPane',
+  zIndex: 10
+}).addTo(Lmap);
+
+L.tileLayer('http://www.google.cn/maps/vt/pb=!1m4!1m3!1i{z}!2i{x}!3i{y}!2m3!1e0!2sm!3i380072576!3m8!2szh-CN!3scn!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0', {
+  pane: 'mapPane',
+  zIndex: 8
+}).addTo(Lmap);
+
+// osm.remove();
+// osm.addTo(Lmap);
+
+var bingLayer = L.tileLayer.bing({
+  bingMapsKey: 'ApqP8RSw28LVM1exawYi9oyEnKls9B5kA06mhIiE4rJCUcMQBkoEvbJscC21LvNW',
+  imagerySet: 'AerialWithLabels',
+  pane: 'mapPane',
+  zIndex: 3
+}).addTo(Lmap);
+
+// var url = 'http://sea.nmc.cn/seamapwms';
+// L.tileLayer.wms(url, {
+//   layers: 'seamap',
+//   format: 'image/png',
+//   transparent: true,
+//   tiled: true,
+//   uppercase: true,
+//   attribution: "",
+//   pane: 'tilePane',
+//   className: 'seamap',
+//   zIndex: 9
+// }).addTo(Lmap);
 
 // controls
 var baseMap = {
@@ -106,3 +140,59 @@ var baseMap = {
 
 OlCommon.CountriesLayer.show(olMap);
 
+function ajaxGzipFile(url, cb) {
+  $.ajax({
+    url: url,
+    // cache: false,
+    xhrFields: {
+      responseType: 'blob'
+    },
+    success: function (data) {
+      if (data instanceof Blob) {
+        var result = '';
+        var reader = new FileReader();
+        reader.readAsBinaryString(data);
+        reader.onload = function() {
+          result = JSON.parse(pako.inflate(reader.result,{to:'string'}));
+          cb(result);
+        };
+        reader.onerror = function (ev) {
+          cb(null);
+        };
+      } else {
+        cb(null);
+      }
+    },
+    error: function () {
+      cb(null);
+    }
+  });
+}
+
+ajaxGzipFile('./libs/swh_2019061123', function (data) {
+  console.log();
+});
+
+var p1Lat = 89;
+var p1Lng = 359.5;
+var p1 = L.latLng(p1Lat, p1Lng);
+// var dis = p1.distanceTo(L.latLng(31.24063, 121.42575));
+// alert(dis);
+
+var bounds = p1.toBounds(2000000);
+var maxLat = bounds['_northEast']['lat'];
+var maxLng = bounds['_northEast']['lng'];
+var minLat = bounds['_southWest']['lat'];
+var minLng = bounds['_southWest']['lng'];
+console.log('圆点坐标为, lon、lat：' + p1Lng + ',' + p1Lat);
+console.log('minLng、minLat、maxLng、maxLat分别是：' + minLng + ',' + minLat + ',' + maxLng + ',' + maxLat);
+
+console.log('距离左上角距离为：' + p1.distanceTo(L.latLng(maxLat, minLng)));
+console.log('距离右上角距离为：' + p1.distanceTo(L.latLng(maxLat, maxLng)));
+console.log('距离左下角距离为：' + p1.distanceTo(L.latLng(minLat, minLng)));
+console.log('距离右下角距离为：' + p1.distanceTo(L.latLng(minLat, maxLng)));
+
+console.log('距离正上方距离为：' + p1.distanceTo(L.latLng(maxLat, p1Lng)));
+console.log('距离正下方距离为：' + p1.distanceTo(L.latLng(minLat, p1Lng)));
+console.log('距离正左方距离为：' + p1.distanceTo(L.latLng(p1Lat, minLng)));
+console.log('距离正右方距离为：' + p1.distanceTo(L.latLng(p1Lat, maxLng)));
