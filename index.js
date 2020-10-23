@@ -2,7 +2,12 @@
 var Lmap = L.map('map-container', {
   center: [18.5, 109.9],
   zoom: 2,
-  minZoom: 2
+  minZoom: 2,
+  crs: L.CRS.EPSG3857,
+  maxBounds: [
+    [-85, -Infinity],
+    [85, Infinity]
+  ],
 }).on('click', function() {
   var popup = L.popup();
   return function(e) {
