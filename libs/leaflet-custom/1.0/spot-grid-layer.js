@@ -160,7 +160,7 @@ var SpotHandler = function () {
                 if (_limitMinValue && value < _limitMinValue) {
                     return;
                 }
-                var rgba = colorScale.gradient(value, 255);
+                var rgba = colorScale.gradient(value, 1000);
                 if (rgba) {
                     var i;
                     for (var x = pixelX; x <= pixelX + 1; x++) {
@@ -178,6 +178,17 @@ var SpotHandler = function () {
     };
 };
 
+//从 canvas 提取图片 image
+function convertCanvasToImage(canvas) {
+//新Image对象，可以理解为DOM
+    var image = new Image();
+// canvas.toDataURL 返回的是一串Base64编码的URL
+// 指定格式 PNG
+    image.src = canvas.toDataURL("image/png");
+    $('body').append(image);
+    return image;
+}
+
 var SpotGridLayer = L.GridLayer.extend({
     initialize: function (options) {
         L.Util.setOptions(this, options);
@@ -190,6 +201,7 @@ var SpotGridLayer = L.GridLayer.extend({
                 console.log('>>>>>>leaflet moveend execute, defers size:' + _layer.options.defers.length);
                 _layer.resolveDefers();
             })
+            _layer.resolveDefers();
         });
         this.on('load', function (e) {
             console.log('>>leaflet load execute, defers size:' + this.options.defers.length);
@@ -236,6 +248,8 @@ var SpotGridLayer = L.GridLayer.extend({
                 var ctx = tile.getContext("2d");
                 if (builder) {
                     var tileSize = 256;
+                    ctx.fillStyle = "black",
+                    ctx.fillRect(0, 0, 256, 256);
                     var imgData = ctx.getImageData(0, 0, tileSize, tileSize);
                     var rgbaArr = imgData.data;
 
@@ -249,6 +263,7 @@ var SpotGridLayer = L.GridLayer.extend({
                         }
                     }
                     ctx.putImageData(imgData, 0, 0);
+                    convertCanvasToImage(tile);
                 }
 
                 if (_this.options && _this.options.debuged) {

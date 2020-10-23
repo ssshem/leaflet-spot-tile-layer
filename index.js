@@ -58,20 +58,20 @@ var olMap = new ol.Map({
 var spotLayer = new SpotGridLayer({
   zIndex: 10,
   debuged: false,
-  // opacity: 0
+  // opacity: 0.1
 }).updateUrl('./data/tiles/pressure/{z}/{x}_{y}', {
   dataZooms: [2, 5],
   colorSegments: [
-    [99000,[142,179,184,255]], [99499.9,[142,179,184,255]],
-    [99500,[104,180,179,255]], [99999.9,[104,180,179,255]],
-    [100000,[69,167,166,255]], [100299.9,[69,167,166,255]],
-    [100300,[57,131,147,255]], [100599.9,[57,131,147,255]],
-    [100600,[57,118,147,255]], [100899.9,[57,118,147,255]],
-    [100900,[57,91,147,255]], [101499.9,[57,91,147,255]],
-    [101500,[58,117,53,255]], [101899.9,[58,117,53,255]],
-    [101900,[159,161,65,255]], [102199.9,[159,161,65,255]],
-    [102200,[173,136,57,255]], [102499.9,[173,136,57,255]],
-    [102500,[170,84,67,255]], [102999.9,[170,84,67,255]],
+    [99000,[142,179,184,255]], //[99499.9,[142,179,184,255]],
+    [99500,[104,180,179,255]],// [99999.9,[104,180,179,255]],
+    [100000,[69,167,166,255]],// [100299.9,[69,167,166,255]],
+    [100300,[57,131,147,255]],// [100599.9,[57,131,147,255]],
+    [100600,[57,118,147,255]],// [100899.9,[57,118,147,255]],
+    [100900,[57,91,147,255]], //[101499.9,[57,91,147,255]],
+    [101500,[58,117,53,255]], //[101899.9,[58,117,53,255]],
+    [101900,[159,161,65,255]],// [102199.9,[159,161,65,255]],
+    [102200,[173,136,57,255]],// [102499.9,[173,136,57,255]],
+    [102500,[170,84,67,255]],// [102999.9,[170,84,67,255]],
     [103000,[94,60,81,255]]
 
     // [99000,[142,179,184,255]],
@@ -93,27 +93,29 @@ var spotLayer = new SpotGridLayer({
 
 var Lmap = OlCommon.getSingleLMap('leaflet-map-container', olMap);
 
-spotLayer.addTo(Lmap);
+setTimeout(function () {
+  spotLayer.addTo(Lmap);
+}, 500);
 
-var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  pane: 'mapPane',
-  zIndex: 10
-}).addTo(Lmap);
-
-L.tileLayer('http://www.google.cn/maps/vt/pb=!1m4!1m3!1i{z}!2i{x}!3i{y}!2m3!1e0!2sm!3i380072576!3m8!2szh-CN!3scn!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0', {
-  pane: 'mapPane',
-  zIndex: 8
-}).addTo(Lmap);
+// var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//   pane: 'mapPane',
+//   zIndex: 10
+// }).addTo(Lmap);
+//
+// L.tileLayer('http://www.google.cn/maps/vt/pb=!1m4!1m3!1i{z}!2i{x}!3i{y}!2m3!1e0!2sm!3i380072576!3m8!2szh-CN!3scn!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0', {
+//   pane: 'mapPane',
+//   zIndex: 8
+// }).addTo(Lmap);
 
 // osm.remove();
 // osm.addTo(Lmap);
 
-var bingLayer = L.tileLayer.bing({
-  bingMapsKey: 'ApqP8RSw28LVM1exawYi9oyEnKls9B5kA06mhIiE4rJCUcMQBkoEvbJscC21LvNW',
-  imagerySet: 'AerialWithLabels',
-  pane: 'mapPane',
-  zIndex: 3
-}).addTo(Lmap);
+// var bingLayer = L.tileLayer.bing({
+//   bingMapsKey: 'ApqP8RSw28LVM1exawYi9oyEnKls9B5kA06mhIiE4rJCUcMQBkoEvbJscC21LvNW',
+//   imagerySet: 'AerialWithLabels',
+//   pane: 'mapPane',
+//   zIndex: 3
+// }).addTo(Lmap);
 
 // var url = 'http://sea.nmc.cn/seamapwms';
 // L.tileLayer.wms(url, {
@@ -129,16 +131,16 @@ var bingLayer = L.tileLayer.bing({
 // }).addTo(Lmap);
 
 // controls
-var baseMap = {
-  "OSM": osm
-};
+// var baseMap = {
+//   "OSM": osm
+// };
 // var spotLayers = {
 //   'spot': spotLayer,
 //   'darkmap': darkmap
 // };
 // L.control.layers(baseMap, spotLayers).addTo(Lmap);
 
-OlCommon.CountriesLayer.show(olMap);
+// OlCommon.CountriesLayer.show(olMap);
 
 function ajaxGzipFile(url, cb) {
   $.ajax({
@@ -169,9 +171,9 @@ function ajaxGzipFile(url, cb) {
   });
 }
 
-ajaxGzipFile('./libs/swh_2019061123', function (data) {
-  console.log();
-});
+// ajaxGzipFile('./libs/swh_2019061123', function (data) {
+//   console.log();
+// });
 
 var p1Lat = 89;
 var p1Lng = 359.5;
